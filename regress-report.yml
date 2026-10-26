@@ -1,0 +1,314 @@
+---
+test-cases:
+  - summary: |
+      Отображение карточек товаров в каталоге
+    status: pass
+
+  - summary: |
+      Отображение рейтинга товара в карточке каталога
+    status: fail
+
+  - summary: |
+      Отображение подробной информации на странице товара
+    status: pass
+
+  - summary: |
+      Соответствие цены со скидкой размеру скидки на странице товара
+    status: pass
+
+  - summary: |
+      Успешный поиск товара по части названия без учета регистра
+    status: pass
+
+  - summary: |
+      Вывод сообщения при поиске несуществующего товара
+    status: fail
+
+  - summary: |
+      Успешный поиск товара по запросу с пробелами в начале и в конце
+    status: fail
+
+  - summary: |
+      Успешный поиск товара, который находится на другой странице каталога
+    status: fail
+
+  - summary: |
+      Успешная фильтрация товаров по категории
+    status: pass
+
+  - summary: |
+      Сброс фильтра по категории без перезагрузки страницы
+    status: pass
+
+  - summary: |
+      Успешная фильтрация товаров по одному бренду
+    status: pass
+
+  - summary: |
+      Успешная фильтрация товаров по нескольким брендам
+    status: pass
+
+  - summary: |
+      Отображение названий у всех чекбоксов фильтра "Brand"
+    status: fail
+
+  - summary: |
+      Успешная фильтрация товаров по диапазону цен
+    status: pass
+
+  - summary: |
+      Включение граничных значений в результат фильтрации по цене
+    status: fail
+
+  - summary: |
+      Отображение максимальной цены в фильтре "Price" с двумя знаками после точки
+    status: fail
+
+  - summary: |
+      Отображение всех товаров при снятом флажке "In Stock"
+    status: fail
+
+  - summary: |
+      Успешный переход на следующую страницу каталога
+    status: pass
+
+  - summary: |
+      Успешный возврат на предыдущую страницу каталога
+    status: pass
+
+  - summary: |
+      Успешное добавление товара в корзину из каталога
+    status: pass
+
+  - summary: |
+      Успешное добавление товара в корзину со страницы товара
+    status: pass
+
+  - summary: |
+      Запрет добавления в корзину товара, которого нет в наличии
+    status: fail
+
+  - summary: |
+      Отображение содержимого корзины
+    status: pass
+
+  - summary: |
+      Корректный расчет стоимостей позиций и итоговой суммы в корзине
+    status: fail
+
+  - summary: |
+      Успешное удаление товара из корзины
+    status: pass
+
+  - summary: |
+      Сохранение содержимого корзины после перезагрузки страницы
+    status: pass
+
+  - summary: |
+      Сохранение очистки корзины после перезагрузки страницы
+    status: fail
+
+  - summary: |
+      Успешный возврат в каталог по кнопке "Continue shopping"
+    status: pass
+
+  - summary: |
+      Переход на страницу оплаты при оформлении заказа
+    status: fail
+
+  - summary: |
+      Успешное создание заказа на сервере при оформлении заказа
+    status: fail
+
+  - summary: |
+      Очистка корзины после оформления заказа
+    status: fail
+
+  - summary: |
+      Вывод сообщения о пустой корзине
+    status: fail
+
+  - summary: |
+      Успешное переключение языка интерфейса на русский
+    status: pass
+
+  - summary: |
+      Успешное переключение языка интерфейса на английский
+    status: pass
+
+  - summary: |
+      Отсутствие орфографических ошибок в окне оформления заказа на русском языке
+    status: fail
+
+  - summary: |
+      Сохранение выбранного языка после перезагрузки страницы
+    status: fail
+
+  - summary: |
+      Отсутствие "битых" изображений в списке "Language"
+    status: pass
+
+  - summary: |
+      Успешное открытие страницы товара по прямой ссылке
+    status: pass
+
+  - summary: |
+      Успешный возврат в каталог кнопкой браузера "Назад"
+    status: pass
+
+  - summary: |
+      Переходы между разделами сайта без перезагрузки страницы
+    status: pass
+
+  - summary: |
+      Отображение страницы 404 при переходе по несуществующему адресу
+    status: fail
+
+  - summary: |
+      Вывод сообщения при открытии несуществующего товара
+    status: fail
+
+  - summary: |
+      Переход в каталог категории по ссылке на странице товара
+    status: pass
+
+  - summary: |
+      Отображение каталога на мобильном устройстве
+    status: fail
+
+  - summary: |
+      Отображение корзины на мобильном устройстве
+    status: fail
+
+  - summary: |
+      Защита поля поиска от внедрения HTML-кода
+    status: pass
+
+  - summary: |
+      Перенаправление с HTTP на HTTPS
+    status: pass
+
+  - summary: |
+      Загрузка главной страницы быстрее 2.5 секунды
+    status: pass
+
+  - summary: |
+      Успешное открытие сайта без использования VPN
+    status: pass
+
+  - summary: |
+      Успешная работа основных сценариев в последней версии Google Chrome
+    status: pass
+
+bugreports:
+  - summary: |
+      Если по запросу или фильтру ничего не найдено, выводятся все товары страницы вместо сообщения "Nothing found!"
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Открыть https://products-store-v2.hexlet.app/
+      2. Ввести qwertyzzz в поле "Search"
+    expected-result: |
+      Карточки товаров не отображаются, выводится сообщение "Nothing found!" (как в версии 1)
+    actual-result: |
+      Отображаются все 30 карточек первой страницы, сообщения нет. Пользователь не может понять, что товар не найден.
+      Так же ведут себя запрос Lemon (товар со второй страницы), запрос "  lipstick  " с пробелами и диапазон цен от 1.49 до 1.99
+      Скриншот assets/v2/search-nothing-shows-all.png
+
+  - summary: |
+      При активном поиске пропадают кнопки пагинации
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Открыть https://products-store-v2.hexlet.app/
+      2. Ввести lipstick в поле "Search"
+    expected-result: |
+      Над карточками и под ними остается кнопка "Next"
+    actual-result: |
+      Отображается карточка "Red Lipstick", блоки пагинации пустые. Так как поиск работает только по текущей странице,
+      найти товар с другой страницы через поиск теперь невозможно (в версии 1 можно было нажать "Next" с тем же запросом).
+      Пагинация также пропадает на первой странице, если снять флажок "In Stock"
+      Скриншот assets/v2/search-no-pagination.png
+
+  - summary: |
+      Мобильная версия - поиск и фильтры расположены внизу страницы, после всех товаров
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, эмуляция iPhone 14 (390x844) в DevTools
+      ОС Linux
+    steps-to-reproduce: |
+      1. Включить в DevTools эмуляцию устройства iPhone 14
+      2. Открыть https://products-store-v2.hexlet.app/
+    expected-result: |
+      Поле "Search" и фильтры доступны в верхней части страницы, до списка товаров
+    actual-result: |
+      Вверху отображаются только шапка, кнопка "Next" и карточки товаров. Поле "Search", "Category", "Brand", "In Stock" и "Price"
+      находятся после всех 30 карточек - примерно через 11 600 px прокрутки
+      Скриншоты assets/v2/mobile-catalog.png и assets/v2/mobile-filters-bottom.png
+
+  - summary: |
+      После сброса фильтра по категории адрес страницы не обновляется, и после перезагрузки фильтр включается снова
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Перейти по адресу https://products-store-v2.hexlet.app/products/1
+      2. Нажать ссылку "#beauty" - открывается https://products-store-v2.hexlet.app/?category=beauty с 5 товарами
+      3. Нажать "Category" и выбрать первый пункт списка (сброс категории)
+      4. Перезагрузить страницу (F5)
+    expected-result: |
+      После шага 3 адрес меняется на https://products-store-v2.hexlet.app/, после перезагрузки отображаются товары всех категорий
+    actual-result: |
+      После шага 3 отображаются товары всех категорий, но адрес остается https://products-store-v2.hexlet.app/?category=beauty.
+      После перезагрузки снова включается фильтр beauty и отображаются только 5 товаров
+
+  - summary: |
+      Название товара в карточке каталога не открывает страницу товара
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Открыть https://products-store-v2.hexlet.app/
+      2. Нажать на название "Essence Mascara Lash Princess" в первой карточке
+    expected-result: |
+      Открывается страница товара https://products-store-v2.hexlet.app/products/1
+    actual-result: |
+      Ничего не происходит. Ссылкой на страницу товара является только изображение, в версии 1 ссылкой была вся карточка
+      Скриншот assets/v2/catalog.png
+
+  - summary: |
+      У пункта сброса фильтра в списке "Category" нет названия
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Открыть https://products-store-v2.hexlet.app/
+      2. Нажать "Category"
+    expected-result: |
+      Первый пункт списка подписан, например "All categories", и понятно, что он сбрасывает фильтр
+    actual-result: |
+      Первый пункт списка пустой - над "beauty" видна пустая строка. Нажатие на нее сбрасывает фильтр, но пользователь об этом не узнает
+      Скриншот assets/v2/category-dropdown.png
+
+  - summary: |
+      Изображения товаров в карточках каталога обрезаны
+    environment: |
+      https://products-store-v2.hexlet.app/ (version 2)
+      Google Chrome 156, окно 1920x1080
+      ОС Linux
+    steps-to-reproduce: |
+      1. Открыть https://products-store-v2.hexlet.app/
+      2. Посмотреть на изображения в карточках "Essence Mascara Lash Princess", "Red Lipstick" и "Calvin Klein CK One"
+    expected-result: |
+      Товар на изображении виден целиком, как в версии 1
+    actual-result: |
+      Изображения обрезаны сверху и снизу - у туши и помады не видно верхней части, у флакона Calvin Klein срезаны крышка и дно.
+      В DevTools у изображений класс object-cover
+      Скриншот assets/v2/catalog.png

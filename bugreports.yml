@@ -1,0 +1,390 @@
+---
+- summary: |
+    При оформлении заказа выводится сообщение "Order placed successfully", хотя сервер вернул ошибку 500
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    3. Нажать "Cart"
+    4. Открыть DevTools, вкладку Network
+    5. Нажать "Checkout"
+  expected-result: |
+    Запрос на создание заказа завершается успешно, выводится сообщение "Order placed successfully".
+    Если сервер вернул ошибку, пользователь видит сообщение об ошибке, заказ не считается оформленным
+  actual-result: |
+    Запрос POST https://products-store.hexlet.app/api/orders с телом {"products":[{"id":1,"quantity":1}],"total":8.943048000000001}
+    возвращает статус 500 и ответ {"message":"Failed to create order","statusCode":500}.
+    При этом на странице выводится окно "Order placed successfully"
+    Скриншот assets/v1/checkout-500-success-modal.png
+
+- summary: |
+    При оформлении заказа нет перехода на страницу оплаты
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    3. Нажать "Cart"
+    4. Нажать "Checkout"
+  expected-result: |
+    Открывается страница оплаты заказа
+  actual-result: |
+    Открывается модальное окно "Order placed successfully" со списком товаров и суммой заказа.
+    Адрес страницы остается https://products-store.hexlet.app/cart, перехода на страницу оплаты нет
+    Скриншот assets/v1/checkout.png
+
+- summary: |
+    После очистки корзины кнопкой "Clear cart" и перезагрузки страницы товары возвращаются в корзину
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    3. Нажать "Cart"
+    4. Нажать "Clear cart"
+    5. Перезагрузить страницу (F5)
+  expected-result: |
+    Корзина пуста, счетчик рядом со ссылкой "Cart" не отображается, выводится "Total: 0.00 $"
+  actual-result: |
+    На шаге 4 корзина на странице очищается ("Total: 0.00 $"), но после перезагрузки в корзине снова "Essence Mascara Lash Princess",
+    счетчик 1, "Total: 8.94 $". В DevTools (Application > Session Storage) значение ключа cart после нажатия "Clear cart" не меняется
+    Скриншоты assets/v1/clear-cart-1-cleared.png и assets/v1/clear-cart-2-after-reload.png
+
+- summary: |
+    Поиск и фильтры работают только по товарам текущей страницы каталога
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/ (первая страница каталога)
+    2. Ввести Lemon в поле "Search"
+  expected-result: |
+    Отображается карточка товара "Lemon"
+  actual-result: |
+    Выводится сообщение "Nothing found!", хотя товар "Lemon" есть на второй странице каталога.
+    Если с тем же запросом нажать "Next", карточка "Lemon" появляется.
+    Фильтры тоже строятся по текущей странице - на второй странице в блоке "Brand" остается только чекбокс без названия,
+    а максимальная цена в блоке "Price" становится 454.8000000000001
+    Скриншот assets/v1/search-other-page.png
+
+- summary: |
+    При открытии несуществующего товара отображается белый экран, приложение перестает работать
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Перейти по адресу https://products-store.hexlet.app/products/99999
+  expected-result: |
+    Отображается шапка сайта и сообщение о том, что товар не найден
+  actual-result: |
+    Страница полностью белая, шапка и подвал не отображаются. Запрос https://products-store.hexlet.app/api/products/99999
+    возвращает 404, после чего содержимое элемента #root становится пустым
+    Скриншот assets/v1/product-missing-blank.png
+
+- summary: |
+    Товар, которого нет в наличии, можно добавить в корзину и оформить заказ
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Перейти по адресу https://products-store.hexlet.app/products/117 (товар "Sportbike Motorcycle", остаток 0)
+    2. Нажать "Add to cart"
+    3. Нажать "Cart"
+    4. Нажать "Checkout"
+  expected-result: |
+    На странице товара есть пометка о том, что товара нет в наличии, кнопка "Add to cart" неактивна, товар не попадает в корзину
+  actual-result: |
+    Пометки об отсутствии товара нет, рядом с кнопкой только число 0 без подписи. Кнопка "Add to cart" активна.
+    Товар добавляется в корзину со строкой "0 qty.", заказ с ним оформляется - выводится окно "Order placed successfully"
+    Скриншоты assets/v1/product-117-out-of-stock.png и assets/v1/cart-1.png
+
+- summary: |
+    Корзина не очищается после оформления заказа
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    3. Нажать "Cart"
+    4. Нажать "Checkout"
+    5. В окне "Order placed successfully" нажать "Close"
+  expected-result: |
+    Корзина пуста, счетчик рядом со ссылкой "Cart" не отображается, выводится "Total: 0.00 $"
+  actual-result: |
+    В корзине остается "Essence Mascara Lash Princess", счетчик 1, "Total: 8.94 $"
+    Скриншот assets/v1/cart-after-order.png
+
+- summary: |
+    Стоимость позиции и итоговая сумма в корзине не совпадают с ценами, которые видит пользователь
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Дважды нажать "Add to cart" в карточке "Essence Mascara Lash Princess" (цена со скидкой 8.94$)
+    3. Нажать "Add to cart" в карточке "Eyeshadow Palette with Mirror" (цена со скидкой 16.35$)
+    4. Нажать "Cart"
+  expected-result: |
+    Стоимость позиции "Essence Mascara Lash Princess" - 8.94$ x 2 = 17.88$, "Eyeshadow Palette with Mirror" - 16.35$,
+    выводится "Total: 34.23 $"
+  actual-result: |
+    Стоимость позиции "Essence Mascara Lash Princess" - 17.89$, выводится "Total: 34.24 $".
+    Стоимости считаются по неокругленным ценам (8.943048 x 2, 8.943048 + 16.353819) и округляются только в конце.
+    С одной штукой каждого товара то же самое - позиции 8.94$ и 16.35$, а "Total: 25.30 $"
+    Скриншот assets/v1/cart-rounding.png
+
+- summary: |
+    В карточках каталога не выводится рейтинг товара
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Найти карточку "Essence Mascara Lash Princess"
+  expected-result: |
+    В карточке выводится рейтинг товара "2.56 ★", как на странице товара
+  actual-result: |
+    Рейтинга в карточке нет. Рядом с ценой выводится число 99 без подписи - это остаток товара на складе
+    Скриншоты assets/v1/catalog-fullhd.png и assets/v1/product-1.png
+
+- summary: |
+    Товары с ценой, равной границе диапазона, не попадают в результат фильтра по цене
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Ввести 1.49 в первое поле блока "Price"
+    3. Ввести 1.99 во второе поле блока "Price"
+  expected-result: |
+    Отображаются карточки "Cucumber" (1.49$) и "Apple" (1.99$)
+  actual-result: |
+    Выводится сообщение "Nothing found!". При диапазоне от 1 до 2 оба товара отображаются, то есть границы диапазона не включаются
+    Скриншот assets/v1/price-boundaries.png
+
+- summary: |
+    При снятом флажке "In Stock" выводятся только товары, которых нет в наличии
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Трижды нажать "Next" - открыта четвертая страница каталога, на ней 29 карточек
+    3. Снять флажок "In Stock"
+  expected-result: |
+    На странице отображаются все 30 товаров, включая "Sportbike Motorcycle", которого нет в наличии
+  actual-result: |
+    На странице остается одна карточка "Sportbike Motorcycle" с остатком 0, остальные 29 товаров скрываются.
+    На первой странице, где все товары в наличии, при снятом флажке выводится "Nothing found!"
+    Скриншот assets/v1/instock-unchecked.png (первая страница)
+
+- summary: |
+    Фильтр по категории нельзя сбросить без перезагрузки страницы
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Category" и выбрать "fragrances"
+    3. Нажать "Category"
+  expected-result: |
+    В списке есть пункт для отображения товаров всех категорий
+  actual-result: |
+    В списке только beauty, fragrances, furniture и groceries. Ссылка "Store" в шапке фильтр тоже не сбрасывает,
+    вернуть все товары можно только перезагрузкой страницы
+    Скриншот assets/v1/category-dropdown-no-reset.png
+
+- summary: |
+    В фильтре "Brand" есть чекбокс без названия
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Посмотреть список чекбоксов в блоке "Brand"
+  expected-result: |
+    У каждого чекбокса есть название бренда
+  actual-result: |
+    Последний чекбокс (после "Bath Trends") без названия, в DevTools у него id="undefined-check".
+    Если его отметить, отображаются 15 товаров категории groceries, у которых нет бренда
+    Скриншот assets/v1/catalog-fullhd.png
+
+- summary: |
+    Максимальная цена в фильтре "Price" выводится как 6577.499999999995
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Посмотреть значение во втором поле блока "Price"
+  expected-result: |
+    Максимальная цена выводится не более чем с двумя знаками после точки
+  actual-result: |
+    В поле выводится 6577.499999999995 (в поле видно "6577.4", полное значение - в атрибуте placeholder в DevTools).
+    На второй странице каталога значение 454.8000000000001
+    Скриншот assets/v1/catalog-fullhd.png
+
+- summary: |
+    Поиск не находит товар, если в запросе есть пробелы в начале и в конце
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Ввести в поле "Search" строку "  lipstick  " (по два пробела в начале и в конце)
+  expected-result: |
+    Отображается карточка "Red Lipstick"
+  actual-result: |
+    Выводится сообщение "Nothing found!". Без пробелов по запросу lipstick карточка "Red Lipstick" находится
+    Скриншот assets/v1/search-spaces.png
+
+- summary: |
+    Опечатка в русском переводе окна оформления заказа - "Заказ успешно формлен"
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Language" и выбрать "Russian"
+    3. Нажать "В корзину" в карточке "Essence Mascara Lash Princess"
+    4. Нажать "Корзина"
+    5. Нажать "Оформить заказ"
+  expected-result: |
+    Заголовок окна - "Заказ успешно оформлен"
+  actual-result: |
+    Заголовок окна - "Заказ успешно формлен"
+    Скриншот assets/v1/lang-ru-checkout-typo.png
+
+- summary: |
+    Выбранный язык интерфейса сбрасывается на английский после перезагрузки страницы
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Language" и выбрать "Russian"
+    3. Перезагрузить страницу (F5)
+  expected-result: |
+    Интерфейс остается на русском языке - "Магазин", "Корзина", "Язык"
+  actual-result: |
+    Интерфейс снова на английском - "Store", "Cart", "Language"
+    Скриншоты assets/v1/lang-1-russian.png и assets/v1/lang-2-after-reload.png
+
+- summary: |
+    Не загружается флаг у пункта "English" в списке "Language"
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/
+    2. Нажать "Language"
+  expected-result: |
+    У пунктов "English", "Russian" и "Spanish" отображаются флаги, название языка выводится один раз
+  actual-result: |
+    У "English" вместо флага значок битой картинки и текст "English English". В DevTools у изображения src="english",
+    запрос https://products-store.hexlet.app/english возвращает HTML-страницу вместо картинки
+    Скриншот assets/v1/lang-dropdown.png
+
+- summary: |
+    Нет страницы 404 при переходе по несуществующему адресу
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Перейти по адресу https://products-store.hexlet.app/some-missing-page
+  expected-result: |
+    Выводится сообщение о том, что страница не найдена, и ссылка для перехода в каталог
+  actual-result: |
+    Отображаются только шапка и подвал сайта, основная часть страницы пустая.
+    В консоли DevTools предупреждение No routes matched location "/some-missing-page"
+    Скриншот assets/v1/route-404.png
+
+- summary: |
+    Ссылка категории "#beauty" на странице товара никуда не ведет
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Перейти по адресу https://products-store.hexlet.app/products/1
+    2. Нажать ссылку "#beauty" над названием товара
+  expected-result: |
+    Открывается каталог, в котором отображаются только товары категории beauty
+  actual-result: |
+    Страница не меняется, к адресу добавляется "#" - https://products-store.hexlet.app/products/1#
+    Скриншот assets/v1/product-1.png
+
+- summary: |
+    На странице пустой корзины нет сообщения о том, что корзина пуста
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, окно 1920x1080
+    ОС Linux
+  steps-to-reproduce: |
+    1. Открыть https://products-store.hexlet.app/ в новой вкладке (корзина пуста)
+    2. Нажать "Cart"
+  expected-result: |
+    Выводится сообщение о том, что корзина пуста, кнопка "Checkout" не отображается
+  actual-result: |
+    Отображаются только кнопки "Clear cart", "Continue shopping" и "Total: 0.00 $", сообщения о пустой корзине нет
+    Скриншот assets/v1/cart-empty.png
+
+- summary: |
+    Мобильная версия каталога - блок фильтров сжат в узкую колонку, поле поиска выходит за его границу, значения цены обрезаны
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, эмуляция iPhone 14 (390x844) в DevTools
+    ОС Linux
+  steps-to-reproduce: |
+    1. Включить в DevTools эмуляцию устройства iPhone 14
+    2. Открыть https://products-store.hexlet.app/
+  expected-result: |
+    Блок фильтров занимает всю ширину экрана, поле "Search" и поля блока "Price" видны полностью,
+    карточки товаров имеют одинаковые отступы от краев экрана
+  actual-result: |
+    Блок фильтров занимает узкую колонку слева (около 90 px), правая часть экрана пустая.
+    Поле "Search" выходит за границу колонки, в полях "Price" видно только "0" и "6", названия брендов переносятся по словам.
+    Первая карточка товара начинается примерно через 1300 px прокрутки и прижата к левому краю экрана
+    Скриншоты assets/v1/mobile-catalog.png и assets/v1/mobile-catalog-cards.png
+
+- summary: |
+    Мобильная версия корзины - обрезан текст "Checkout", количество сливается с ценой, цена со скидкой не видна
+  environment: |
+    https://products-store.hexlet.app/ (version 1)
+    Google Chrome 156, эмуляция iPhone 14 (390x844) в DevTools
+    ОС Linux
+  steps-to-reproduce: |
+    1. Включить в DevTools эмуляцию устройства iPhone 14
+    2. Открыть https://products-store.hexlet.app/
+    3. Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    4. Перейти по адресу https://products-store.hexlet.app/cart
+  expected-result: |
+    Текст кнопки "Checkout" виден полностью, в строке товара видны количество 1, цена без скидки 9.99$ и цена со скидкой 8.94$
+  actual-result: |
+    На кнопке видно только "Checkou". Количество 1 стоит вплотную к зачеркнутой цене 9.99$ и читается как "19.99$".
+    Цена со скидкой 8.94$ выходит за правый край экрана - ширина страницы 441 px при ширине экрана 390 px
+    Скриншот assets/v1/mobile-cart.png

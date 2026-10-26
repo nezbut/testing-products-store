@@ -1,0 +1,698 @@
+---
+- summary: |
+    Отображение карточек товаров в каталоге
+  requirement: |
+    Пользователь должен иметь возможность просматривать товары
+  prerequisites: |
+    Браузер открыт, корзина пуста, язык интерфейса English
+  test-data: |
+    https://products-store.hexlet.app/
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/
+  expected-result: |
+    На странице выводится 30 карточек товаров и кнопка "Next" для перехода на следующую страницу.
+    В каждой карточке есть изображение, название, описание, зачеркнутая цена без скидки, цена со скидкой и кнопка "Add to cart".
+    Первая карточка - "Essence Mascara Lash Princess" с ценами 9.99$ и 8.94$
+
+- summary: |
+    Отображение рейтинга товара в карточке каталога
+  requirement: |
+    В каталоге и на странице товара выводятся название, рейтинг, цена со скидкой и без нее
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/
+  test-data: |
+    Товар "Essence Mascara Lash Princess", рейтинг на странице товара - 2.56
+  steps:
+    - Найти в каталоге карточку товара "Essence Mascara Lash Princess"
+  expected-result: |
+    В карточке товара выводится рейтинг "2.56 ★"
+
+- summary: |
+    Отображение подробной информации на странице товара
+  requirement: |
+    Пользователь должен иметь возможность просматривать подробную информацию о товаре.
+    На странице товара выводятся название, рейтинг, цена со скидкой и без нее
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/
+  test-data: |
+    Товар "Essence Mascara Lash Princess"
+  steps:
+    - Нажать на карточку товара "Essence Mascara Lash Princess"
+  expected-result: |
+    Открывается страница https://products-store.hexlet.app/products/1.
+    На странице есть ссылка на категорию "#beauty", заголовок "Essence Mascara Lash Princess", "Rating: 2.56 ★",
+    зачеркнутая цена 9.99$, цена со скидкой 8.94$, размер скидки "10.48% Off", кнопка "Add to cart" и блок "Description" с описанием товара
+
+- summary: |
+    Соответствие цены со скидкой размеру скидки на странице товара
+  requirement: |
+    Цена со скидкой не больше цены без скидки, процент скидки соответствует разнице цен
+  prerequisites: |
+    Открыта страница товара https://products-store.hexlet.app/products/1
+  test-data: |
+    Цена 9.99$, скидка 10.48%.
+    Ожидаемая цена со скидкой 9.99 x (1 - 0.1048) = 8.94$
+  steps:
+    - Сравнить цену со скидкой с ценой без скидки и размером скидки
+  expected-result: |
+    Цена со скидкой равна 8.94$ и меньше цены без скидки 9.99$
+
+- summary: |
+    Успешный поиск товара по части названия без учета регистра
+  requirement: |
+    Пользователь должен иметь возможность искать товары по ключевому слову.
+    Поиск не зависит от регистра и игнорирует пробелы в начале и в конце запроса
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Запрос LIPSTICK - часть названия "Red Lipstick", набранная в другом регистре
+  steps:
+    - Ввести LIPSTICK в поле "Search"
+  expected-result: |
+    Без перезагрузки страницы в каталоге остается одна карточка "Red Lipstick"
+
+- summary: |
+    Вывод сообщения при поиске несуществующего товара
+  requirement: |
+    Если по запросу ничего не найдено, выводится сообщение об этом
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Запрос qwertyzzz
+  steps:
+    - Ввести qwertyzzz в поле "Search"
+  expected-result: |
+    Карточки товаров не отображаются, выводится сообщение "Nothing found!"
+
+- summary: |
+    Успешный поиск товара по запросу с пробелами в начале и в конце
+  requirement: |
+    Поиск не зависит от регистра и игнорирует пробелы в начале и в конце запроса
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Запрос "  lipstick  " (по два пробела в начале и в конце)
+  steps:
+    - Ввести "  lipstick  " в поле "Search"
+  expected-result: |
+    В каталоге остается одна карточка "Red Lipstick"
+
+- summary: |
+    Успешный поиск товара, который находится на другой странице каталога
+  requirement: |
+    Поиск и фильтры работают по всему каталогу, а не только по текущей странице
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Запрос Lemon. Товар "Lemon" находится на второй странице каталога
+  steps:
+    - Ввести Lemon в поле "Search"
+  expected-result: |
+    В каталоге отображается карточка "Lemon"
+
+- summary: |
+    Успешная фильтрация товаров по категории
+  requirement: |
+    Пользователь должен иметь возможность искать товары по категории
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Категория fragrances
+  steps:
+    - Нажать "Category"
+    - Выбрать "fragrances"
+  expected-result: |
+    Под "Category" отображается выбранная категория "fragrances".
+    В каталоге 5 карточек - Calvin Klein CK One, Chanel Coco Noir Eau De, Dior J'adore, Dolce Shine Eau de, Gucci Bloom Eau de
+
+- summary: |
+    Сброс фильтра по категории без перезагрузки страницы
+  requirement: |
+    Снятие фильтра расширяет выдачу, а любой фильтр можно сбросить без перезагрузки страницы
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/, в фильтре "Category" выбрана категория fragrances
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Category"
+  expected-result: |
+    В выпадающем списке, кроме категорий beauty, fragrances, furniture и groceries, есть пункт для отображения товаров всех категорий
+
+- summary: |
+    Успешная фильтрация товаров по одному бренду
+  requirement: |
+    Пользователь должен иметь возможность фильтровать товары
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Бренд Essence
+  steps:
+    - Отметить чекбокс "Essence" в блоке "Brand"
+  expected-result: |
+    В каталоге остается одна карточка "Essence Mascara Lash Princess"
+
+- summary: |
+    Успешная фильтрация товаров по нескольким брендам
+  requirement: |
+    Пользователь должен иметь возможность фильтровать товары
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Бренды Essence и Chanel
+  steps:
+    - Отметить чекбокс "Essence" в блоке "Brand"
+    - Отметить чекбокс "Chanel" в блоке "Brand"
+  expected-result: |
+    В каталоге остаются две карточки - "Essence Mascara Lash Princess" и "Chanel Coco Noir Eau De"
+
+- summary: |
+    Отображение названий у всех чекбоксов фильтра "Brand"
+  requirement: |
+    У всех элементов фильтров есть понятные подписи
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Не требуются
+  steps:
+    - Просмотреть список чекбоксов в блоке "Brand"
+  expected-result: |
+    У каждого чекбокса в блоке "Brand" есть название бренда
+
+- summary: |
+    Успешная фильтрация товаров по диапазону цен
+  requirement: |
+    Пользователь должен иметь возможность фильтровать товары
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Цена от 100 до 500
+  steps:
+    - Ввести 100 в первое поле блока "Price"
+    - Ввести 500 во второе поле блока "Price"
+  expected-result: |
+    В каталоге остаются три карточки - "Chanel Coco Noir Eau De" (129.99$), "Bedside Table African Cherry" (299.99$)
+    и "Knoll Saarinen Executive Conference Chair" (499.99$)
+
+- summary: |
+    Включение граничных значений в результат фильтрации по цене
+  requirement: |
+    Граничные значения диапазона цен включаются в результат фильтрации
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Цена от 1.49 до 1.99.
+    Цена товара "Cucumber" - 1.49$, цена товара "Apple" - 1.99$
+  steps:
+    - Ввести 1.49 в первое поле блока "Price"
+    - Ввести 1.99 во второе поле блока "Price"
+  expected-result: |
+    В каталоге отображаются карточки "Apple" и "Cucumber"
+
+- summary: |
+    Отображение максимальной цены в фильтре "Price" с двумя знаками после точки
+  requirement: |
+    Цены выводятся в денежном формате с двумя знаками после точки, без артефактов вычислений
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Не требуются
+  steps:
+    - Посмотреть значение во втором поле блока "Price"
+  expected-result: |
+    Максимальная цена выводится не более чем с двумя знаками после точки
+
+- summary: |
+    Отображение всех товаров при снятом флажке "In Stock"
+  requirement: |
+    Снятие фильтра расширяет выдачу, а любой фильтр можно сбросить без перезагрузки страницы
+  prerequisites: |
+    Открыта четвертая страница каталога (на главной странице https://products-store.hexlet.app/ трижды нажата кнопка "Next"),
+    флажок "In Stock" установлен, на странице 29 карточек
+  test-data: |
+    Товар "Sportbike Motorcycle" на четвертой странице, остаток 0
+  steps:
+    - Снять флажок "In Stock"
+  expected-result: |
+    На странице отображаются все 30 товаров, включая "Sportbike Motorcycle", которого нет в наличии
+
+- summary: |
+    Успешный переход на следующую страницу каталога
+  requirement: |
+    Каталог товаров выводится постранично
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Next"
+  expected-result: |
+    Отображается вторая страница каталога - 30 других товаров, первая карточка "Lemon"
+
+- summary: |
+    Успешный возврат на предыдущую страницу каталога
+  requirement: |
+    Каталог товаров выводится постранично
+  prerequisites: |
+    Открыта вторая страница каталога (на главной странице нажата кнопка "Next")
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Previous"
+  expected-result: |
+    Отображается первая страница каталога, первая карточка "Essence Mascara Lash Princess"
+
+- summary: |
+    Успешное добавление товара в корзину из каталога
+  requirement: |
+    Пользователь должен иметь возможность добавлять товары в корзину и продолжать выбирать товары в каталоге
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/, корзина пуста
+  test-data: |
+    Товар "Essence Mascara Lash Princess"
+  steps:
+    - Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+  expected-result: |
+    Пользователь остается на странице каталога, рядом со ссылкой "Cart" появляется счетчик 1
+
+- summary: |
+    Успешное добавление товара в корзину со страницы товара
+  requirement: |
+    Пользователь должен иметь возможность добавлять товары в корзину
+  prerequisites: |
+    Открыта страница товара https://products-store.hexlet.app/products/1, корзина пуста
+  test-data: |
+    Товар "Essence Mascara Lash Princess", 2 шт.
+  steps:
+    - Нажать "Add to cart"
+    - Нажать "Add to cart" еще раз
+    - Нажать "Cart"
+  expected-result: |
+    Рядом со ссылкой "Cart" отображается счетчик 2.
+    В корзине одна строка "Essence Mascara Lash Princess" с количеством 2
+
+- summary: |
+    Запрет добавления в корзину товара, которого нет в наличии
+  requirement: |
+    Товар, которого нет в наличии, помечен как отсутствующий, и его нельзя добавить в корзину
+  prerequisites: |
+    Открыта страница товара https://products-store.hexlet.app/products/117, корзина пуста
+  test-data: |
+    Товар "Sportbike Motorcycle", остаток на складе 0
+  steps:
+    - Нажать "Add to cart"
+  expected-result: |
+    На странице есть пометка о том, что товара нет в наличии, кнопка "Add to cart" неактивна.
+    Счетчик рядом со ссылкой "Cart" не появляется
+
+- summary: |
+    Отображение содержимого корзины
+  requirement: |
+    Пользователь должен иметь возможность просматривать содержимое корзины
+  prerequisites: |
+    Открыта главная страница, в корзину добавлены "Essence Mascara Lash Princess" и "Eyeshadow Palette with Mirror" по 1 шт.
+  test-data: |
+    "Essence Mascara Lash Princess" - 9.99$ / 8.94$, "Eyeshadow Palette with Mirror" - 19.99$ / 16.35$
+  steps:
+    - Нажать "Cart"
+  expected-result: |
+    Открывается страница https://products-store.hexlet.app/cart с кнопками "Clear cart", "Continue shopping" и "Checkout".
+    Для каждого товара выводится строка с названием, количеством 1, зачеркнутой ценой без скидки, кнопкой "Delete" и ценой со скидкой - 8.94$ и 16.35$
+
+- summary: |
+    Корректный расчет стоимостей позиций и итоговой суммы в корзине
+  requirement: |
+    Стоимость позиции в корзине равна цене со скидкой, умноженной на количество, а итоговая сумма равна сумме стоимостей позиций
+  prerequisites: |
+    В корзину дважды добавлен "Essence Mascara Lash Princess" и один раз "Eyeshadow Palette with Mirror"
+  test-data: |
+    "Essence Mascara Lash Princess" - 8.94$ x 2 = 17.88$
+    "Eyeshadow Palette with Mirror" - 16.35$ x 1 = 16.35$
+    Итого 17.88$ + 16.35$ = 34.23$
+  steps:
+    - Нажать "Cart"
+  expected-result: |
+    Стоимость позиции "Essence Mascara Lash Princess" - 17.88$, стоимость позиции "Eyeshadow Palette with Mirror" - 16.35$,
+    выводится "Total: 34.23 $"
+
+- summary: |
+    Успешное удаление товара из корзины
+  requirement: |
+    Пользователь может удалить товар из корзины
+  prerequisites: |
+    В корзину добавлены "Essence Mascara Lash Princess" и "Eyeshadow Palette with Mirror" по 1 шт., открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Удаляемый товар "Eyeshadow Palette with Mirror"
+  steps:
+    - Нажать "Delete" в строке "Eyeshadow Palette with Mirror"
+  expected-result: |
+    Строка "Eyeshadow Palette with Mirror" удаляется, в корзине остается "Essence Mascara Lash Princess".
+    Счетчик рядом со ссылкой "Cart" равен 1, выводится "Total: 8.94 $"
+
+- summary: |
+    Сохранение содержимого корзины после перезагрузки страницы
+  requirement: |
+    Корзина хранится в сессии браузера
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Перезагрузить страницу (F5)
+  expected-result: |
+    В корзине строка "Essence Mascara Lash Princess" с количеством 1, счетчик рядом со ссылкой "Cart" равен 1, выводится "Total: 8.94 $"
+
+- summary: |
+    Сохранение очистки корзины после перезагрузки страницы
+  requirement: |
+    Корзина сохраняется при перезагрузке страницы, а удаление товаров и очистка корзины сохраняются после перезагрузки
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Clear cart"
+    - Перезагрузить страницу (F5)
+  expected-result: |
+    Корзина пуста, счетчик рядом со ссылкой "Cart" не отображается, выводится "Total: 0.00 $"
+
+- summary: |
+    Успешный возврат в каталог по кнопке "Continue shopping"
+  requirement: |
+    Из корзины пользователь может вернуться в каталог и продолжить выбирать товары
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Continue shopping"
+  expected-result: |
+    Открывается главная страница с каталогом, счетчик рядом со ссылкой "Cart" равен 1
+
+- summary: |
+    Переход на страницу оплаты при оформлении заказа
+  requirement: |
+    Из корзины пользователь может оформить заказ с переходом на страницу оплаты
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Checkout"
+  expected-result: |
+    Открывается страница оплаты заказа
+
+- summary: |
+    Успешное создание заказа на сервере при оформлении заказа
+  requirement: |
+    Сообщение об успешном оформлении заказа показывается только при успешном ответе сервера, иначе выводится сообщение об ошибке
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart,
+    в DevTools открыта вкладка Network
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Checkout"
+  expected-result: |
+    Запрос POST https://products-store.hexlet.app/api/orders завершается со статусом 2xx,
+    на странице выводится сообщение "Order placed successfully"
+
+- summary: |
+    Очистка корзины после оформления заказа
+  requirement: |
+    После успешного оформления заказа корзина очищается
+  prerequisites: |
+    В корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Checkout"
+    - В окне "Order placed successfully" нажать "Close"
+  expected-result: |
+    Корзина пуста, счетчик рядом со ссылкой "Cart" не отображается, выводится "Total: 0.00 $"
+
+- summary: |
+    Вывод сообщения о пустой корзине
+  requirement: |
+    Если корзина пуста, выводится сообщение об этом, а оформить заказ нельзя
+  prerequisites: |
+    Корзина пуста, открыта главная страница https://products-store.hexlet.app/
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Cart"
+  expected-result: |
+    На странице выводится сообщение о том, что корзина пуста, кнопка "Checkout" не отображается
+
+- summary: |
+    Успешное переключение языка интерфейса на русский
+  requirement: |
+    Пользователь должен иметь возможность переключить язык интерфейса.
+    Сайт должен иметь локализацию на русский и английский языки
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/, язык интерфейса English
+  test-data: |
+    Язык Russian
+  steps:
+    - Нажать "Language"
+    - Выбрать "Russian"
+  expected-result: |
+    Интерфейс отображается на русском языке - "Магазин", "Корзина", "Язык", поле "Поиск", "Категория", "Производитель",
+    "В наличии", "Цена", "Следующая", кнопки "В корзину"
+
+- summary: |
+    Успешное переключение языка интерфейса на английский
+  requirement: |
+    Пользователь должен иметь возможность переключить язык интерфейса.
+    Сайт должен иметь локализацию на русский и английский языки
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/, язык интерфейса русский
+  test-data: |
+    Язык English
+  steps:
+    - Нажать "Язык"
+    - Выбрать "English"
+  expected-result: |
+    Интерфейс отображается на английском языке - "Store", "Cart", "Language", поле "Search", "Category", "Brand",
+    "In Stock", "Price", "Next", кнопки "Add to cart"
+
+- summary: |
+    Отсутствие орфографических ошибок в окне оформления заказа на русском языке
+  requirement: |
+    Тексты интерфейса переведены полностью и не содержат орфографических ошибок
+  prerequisites: |
+    Язык интерфейса русский, в корзину добавлен "Essence Mascara Lash Princess" (1 шт.), открыта страница https://products-store.hexlet.app/cart
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Оформить заказ"
+  expected-result: |
+    Заголовок окна - "Заказ успешно оформлен"
+
+- summary: |
+    Сохранение выбранного языка после перезагрузки страницы
+  requirement: |
+    Выбранный язык интерфейса сохраняется при перезагрузке страницы
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/, язык интерфейса English
+  test-data: |
+    Язык Russian
+  steps:
+    - Нажать "Language"
+    - Выбрать "Russian"
+    - Перезагрузить страницу (F5)
+  expected-result: |
+    Интерфейс отображается на русском языке - "Магазин", "Корзина", "Язык"
+
+- summary: |
+    Отсутствие "битых" изображений в списке "Language"
+  requirement: |
+    Все изображения в интерфейсе загружаются, "битых" картинок нет
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Language"
+  expected-result: |
+    В списке нет "битых" изображений, названия "English", "Russian" и "Spanish" выводятся по одному разу
+
+- summary: |
+    Успешное открытие страницы товара по прямой ссылке
+  requirement: |
+    У каждого товара есть собственный адрес, по которому страницу товара можно открыть напрямую
+  prerequisites: |
+    Браузер открыт
+  test-data: |
+    https://products-store.hexlet.app/products/117
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/products/117
+  expected-result: |
+    Открывается страница товара "Sportbike Motorcycle" с "Rating: 3.94 ★", ценой без скидки 7499.99$ и ценой со скидкой 6631.49$
+
+- summary: |
+    Успешный возврат в каталог кнопкой браузера "Назад"
+  requirement: |
+    Кнопка браузера "Назад" возвращает на предыдущую страницу приложения
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/
+  test-data: |
+    Товар "Essence Mascara Lash Princess"
+  steps:
+    - Нажать на карточку товара "Essence Mascara Lash Princess"
+    - Нажать кнопку браузера "Назад"
+  expected-result: |
+    Открывается главная страница https://products-store.hexlet.app/ с каталогом, первая карточка "Essence Mascara Lash Princess"
+
+- summary: |
+    Переходы между разделами сайта без перезагрузки страницы
+  requirement: |
+    Сайт является SPA-приложением и не перезагружает страницу при переходах между разделами
+  prerequisites: |
+    Открыта главная страница https://products-store.hexlet.app/, в DevTools открыта вкладка Network с фильтром "Doc"
+  test-data: |
+    Не требуются
+  steps:
+    - Нажать "Cart"
+    - Нажать "Store"
+    - Нажать на карточку товара "Essence Mascara Lash Princess"
+  expected-result: |
+    Адрес в строке браузера меняется на /cart, / и /products/1.
+    Во вкладке Network не появляется новых запросов типа Document
+
+- summary: |
+    Отображение страницы 404 при переходе по несуществующему адресу
+  requirement: |
+    При переходе по несуществующему адресу или к несуществующему товару выводится страница с сообщением об ошибке, приложение не перестает работать
+  prerequisites: |
+    Браузер открыт
+  test-data: |
+    https://products-store.hexlet.app/some-missing-page
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/some-missing-page
+  expected-result: |
+    Выводится сообщение о том, что страница не найдена, и ссылка для перехода в каталог
+
+- summary: |
+    Вывод сообщения при открытии несуществующего товара
+  requirement: |
+    При переходе по несуществующему адресу или к несуществующему товару выводится страница с сообщением об ошибке, приложение не перестает работать
+  prerequisites: |
+    Браузер открыт
+  test-data: |
+    https://products-store.hexlet.app/products/99999
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/products/99999
+  expected-result: |
+    Отображается шапка сайта со ссылками "Store", "Cart", "Language" и сообщение о том, что товар не найден
+
+- summary: |
+    Переход в каталог категории по ссылке на странице товара
+  requirement: |
+    Все ссылки ведут на существующие разделы сайта
+  prerequisites: |
+    Открыта страница товара https://products-store.hexlet.app/products/1
+  test-data: |
+    Категория beauty
+  steps:
+    - Нажать ссылку "#beauty"
+  expected-result: |
+    Открывается каталог, в котором отображаются только товары категории beauty
+
+- summary: |
+    Отображение каталога на мобильном устройстве
+  requirement: |
+    Сайт должен иметь мобильную версию (адаптивная верстка)
+  prerequisites: |
+    В DevTools включена эмуляция устройства iPhone 14 (390x844)
+  test-data: |
+    https://products-store.hexlet.app/
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/
+  expected-result: |
+    Блок фильтров занимает всю ширину экрана, поле "Search" не выходит за границы блока фильтров,
+    значения в полях блока "Price" видны полностью, карточки товаров имеют одинаковые отступы от краев экрана
+
+- summary: |
+    Отображение корзины на мобильном устройстве
+  requirement: |
+    Сайт должен иметь мобильную версию (адаптивная верстка)
+  prerequisites: |
+    В DevTools включена эмуляция устройства iPhone 14 (390x844), в корзину добавлен "Essence Mascara Lash Princess" (1 шт.)
+  test-data: |
+    https://products-store.hexlet.app/cart
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/cart
+  expected-result: |
+    Текст кнопки "Checkout" виден полностью.
+    В строке товара видны количество 1, цена без скидки 9.99$ и цена со скидкой 8.94$, значения не сливаются друг с другом.
+    Страница не прокручивается по горизонтали
+
+- summary: |
+    Защита поля поиска от внедрения HTML-кода
+  requirement: |
+    Сайт должен быть безопасным и защищать данные пользователя.
+    Данные, введенные в поле поиска, не исполняются как HTML или JavaScript
+  prerequisites: |
+    Открыта первая страница каталога https://products-store.hexlet.app/
+  test-data: |
+    <img src=x onerror=alert(1)>
+  steps:
+    - Ввести <img src=x onerror=alert(1)> в поле "Search"
+  expected-result: |
+    Всплывающее окно alert не появляется, на страницу не добавляется изображение, код не выполняется
+
+- summary: |
+    Перенаправление с HTTP на HTTPS
+  requirement: |
+    Сайт работает по HTTPS, запросы по HTTP перенаправляются на HTTPS
+  prerequisites: |
+    Браузер открыт
+  test-data: |
+    http://products-store.hexlet.app/
+  steps:
+    - Перейти по адресу http://products-store.hexlet.app/
+  expected-result: |
+    Выполняется перенаправление на https://products-store.hexlet.app/, в адресной строке отображается значок защищенного соединения
+
+- summary: |
+    Загрузка главной страницы быстрее 2.5 секунды
+  requirement: |
+    Сайт нужно оптимизировать для скорости работы
+  prerequisites: |
+    В DevTools открыта вкладка Performance
+  test-data: |
+    https://products-store.hexlet.app/
+  steps:
+    - Начать запись в Performance с перезагрузкой страницы
+    - Посмотреть значение метрики LCP
+  expected-result: |
+    Значение LCP не превышает 2.5 с
+
+- summary: |
+    Успешное открытие сайта без использования VPN
+  requirement: |
+    Сайт должен быть доступен для пользователей без использования VPN (прямой доступ из сети Интернет)
+  prerequisites: |
+    VPN и прокси отключены
+  test-data: |
+    https://products-store.hexlet.app/
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/
+  expected-result: |
+    Открывается главная страница с каталогом товаров
+
+- summary: |
+    Успешная работа основных сценариев в последней версии Google Chrome
+  requirement: |
+    Сайт нужно протестировать на совместимость с последними версиями браузеров
+  prerequisites: |
+    Установлен Google Chrome 156, корзина пуста
+  test-data: |
+    Товар "Essence Mascara Lash Princess"
+  steps:
+    - Перейти по адресу https://products-store.hexlet.app/
+    - Нажать "Add to cart" в карточке "Essence Mascara Lash Princess"
+    - Нажать "Cart"
+  expected-result: |
+    Каталог отображается, товар добавляется в корзину, в корзине строка "Essence Mascara Lash Princess".
+    В консоли DevTools нет ошибок
